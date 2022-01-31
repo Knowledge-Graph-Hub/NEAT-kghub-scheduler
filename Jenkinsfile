@@ -18,10 +18,12 @@ pipeline {
         GCLOUD_VM='gpgpgpuwhereareyou'
         GCLOUD_ZONE='us-central1-a'
     }
+    
     options {
         timestamps()
         disableConcurrentBuilds()
     }
+
     stages {
         // Very first: pause for a minute to give a chance to
         // cancel and clean the workspace before use.
@@ -108,7 +110,7 @@ pipeline {
 
             }
         }
-
+    }
 
     post {
         always {
