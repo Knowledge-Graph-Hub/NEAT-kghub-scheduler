@@ -6,7 +6,7 @@ pipeline {
         }
     }
     triggers{
-        cron('1 9 * * MON')
+        cron('1 9 * * 1')
     }
     environment {
         RUNSTARTDATE = sh(script: "echo `date +%Y%m%d`", returnStdout: true).trim()
@@ -18,7 +18,7 @@ pipeline {
         GCLOUD_VM='gpgpgpuwhereareyou'
         GCLOUD_ZONE='us-central1-a'
     }
-    
+
     options {
         timestamps()
         disableConcurrentBuilds()
