@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             reuseNode false
-            image 'caufieldjh/ubuntu20-python-3-8-5-dev:4-with-dbs-v6'
+            image 'justaddcoffee/ubuntu20-python-3-8-5-dev:8'
         }
     }
     triggers{
