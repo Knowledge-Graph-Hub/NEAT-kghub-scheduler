@@ -64,7 +64,6 @@ pipeline {
                     sh '/usr/bin/python3.8 -m venv venv'
                     sh '. venv/bin/activate'
                     // Now move on to the actual install + reqs
-                    //sh './venv/bin/pip install .'
                     sh './venv/bin/pip install git+https://github.com/Knowledge-Graph-Hub/NEAT.git'
                 }
             }
