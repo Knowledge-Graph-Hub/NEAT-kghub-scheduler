@@ -10,10 +10,6 @@ pipeline {
     }
     environment {
         RUNSTARTDATE = sh(script: "echo `date +%Y%m%d`", returnStdout: true).trim()
-        //S3PROJECTDIR = 'kg-idg' // no trailing slash
-
-        //MERGEDKGNAME_BASE = "KG-IDG"
-        //MERGEDKGNAME_GENERIC = "merged-kg"
         GCLOUD_PROJECT = 'test-project-covid-19-277821'
         GCLOUD_VM='gpgpgpuwhereareyou'
         GCLOUD_ZONE='us-central1-a'
