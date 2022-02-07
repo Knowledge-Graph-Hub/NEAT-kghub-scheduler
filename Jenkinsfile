@@ -115,7 +115,7 @@ pipeline {
             steps {
                 dir('./gcloud') {
                     withCredentials([file(credentialsId: 'GCLOUD_CRED_JSON', variable: 'GCLOUD_CRED_JSON')]) {
-                        echo 'Performing ...'
+                        echo 'Performing dependency update on Gcloud instance...'
                         def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT && git pull && pip install . && cd .. \"", returnStatus:true
                         def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT-kghub-scheduler && git pull && pip install . && cd .. \"", returnStatus:true
                         if(EXIT_CODE_NEAT_SETUP != 0){
@@ -132,7 +132,25 @@ pipeline {
                 }
 
             }
-        }        
+        }
+        stage('Check for new NEAT projects and run') {
+            when { anyOf { branch 'main' } }
+            steps {
+                dir('./gcloud') {
+                    withCredentials([file(credentialsId: 'GCLOUD_CRED_JSON', variable: 'GCLOUD_CRED_JSON')]) {
+                        echo 'Checking for new NEAT configs on KG-Hub...'
+                        // Use the scheduler to check the KG-Hub bucket
+                        def EXIT_CODE_NEAT_CHECK=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT-kghub-scheduler && python check.py --bucket kg-hub-public-data && cd ..  \"", returnStatus:true
+                        if(EXIT_CODE_NEAT_CHECK != 0){
+                            echo 'Failed while updating NEAT...'
+                            currentBuild.result = 'FAILED'
+                            return
+                        }
+                    }
+                }
+
+            }
+        }          
     }
 
     post {
