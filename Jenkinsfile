@@ -110,6 +110,29 @@ pipeline {
 
             }
         }
+        stage('Update dependencies on Gcloud instance') {
+            when { anyOf { branch 'main' } }
+            steps {
+                dir('./gcloud') {
+                    withCredentials([file(credentialsId: 'GCLOUD_CRED_JSON', variable: 'GCLOUD_CRED_JSON')]) {
+                        echo 'Performing ...'
+                        def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT && git pull && pip install . && cd .. \"", returnStatus:true
+                        def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT-kghub-scheduler && git pull && pip install . && cd .. \"", returnStatus:true
+                        if(EXIT_CODE_NEAT_SETUP != 0){
+                            echo 'Failed while updating NEAT...'
+                            currentBuild.result = 'FAILED'
+                            return
+                        }
+                        if(EXIT_CODE_NEATSCHED_SETUP != 0){
+                            echo 'Failed while updating NEAT-kghub-scheduler...'
+                            currentBuild.result = 'FAILED'
+                            return
+                        }
+                    }
+                }
+
+            }
+        }        
     }
 
     post {
