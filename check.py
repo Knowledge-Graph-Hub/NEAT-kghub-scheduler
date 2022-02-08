@@ -15,6 +15,8 @@ import boto3
 import click
 from datetime import datetime
 
+# TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
+
 @click.command()
 @click.option("--bucket",
                required=True,
@@ -22,6 +24,7 @@ from datetime import datetime
                help="""The name of an AWS S3 bucket.""")
 def run(bucket: str):
     new_neats = check_bucket(bucket)
+    retrieve(bucket, new_neats)
 
 def check_bucket(bucket: str):
     """
@@ -34,7 +37,6 @@ def check_bucket(bucket: str):
                 "Key":string key for NEAT config,
                 "LastModified":LastModified string,
                 "To_Run":bool
-
     """
 
     all_keys = []
@@ -86,7 +88,21 @@ def check_bucket(bucket: str):
 
     return all_neats
 
-# TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
+def retrieve(bucket: str, neats: dict) -> None:
+    """
+    Downloads specific files from the remote bucket.
+    :param bucket: name of the bucket
+    :param neats: dict produced by check_bucket
+    """
+
+    client = boto3.client('s3')
+
+    for neat in neats:
+        if neat["To_Run"]:
+            keyname = neat["Key"]
+            outfilename = ((keyname.split("/"))[-1]).replace(".yaml", "-" + neat["LastModified"] + ".yaml")
+            print(f"Downloading {keyname} to {outfilename}")
+            client.download_file(bucket, keyname, outfilename)
 
 if __name__ == '__main__':
   run()
