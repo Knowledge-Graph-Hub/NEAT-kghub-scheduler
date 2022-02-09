@@ -11,11 +11,10 @@ If:
 then the run continues.
 """
 
+import os
 import boto3
 import click
 from datetime import datetime
-
-# TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
 
 @click.command()
 @click.option("--bucket",
@@ -24,7 +23,10 @@ from datetime import datetime
                help="""The name of an AWS S3 bucket.""")
 def run(bucket: str):
     new_neats = check_bucket(bucket)
-    retrieve(bucket, new_neats)
+    if len(new_neats) > 0:
+        retrieve(bucket, new_neats)
+    else:
+        print("Found no new NEAT configs. Nothing to do.")
 
 def check_bucket(bucket: str):
     """
@@ -101,8 +103,9 @@ def retrieve(bucket: str, neats: dict) -> None:
         if neat["To_Run"]:
             keyname = neat["Key"]
             outfilename = ((keyname.split("/"))[-1]).replace(".yaml", "-" + neat["LastModified"] + ".yaml")
-            print(f"Downloading {keyname} to {outfilename}")
-            client.download_file(bucket, keyname, outfilename)
+            outfilepath = os.path.join("../",outfilename)
+            print(f"Downloading {keyname} to {outfilepath}")
+            client.download_file(bucket, keyname, outfilepath)
 
 if __name__ == '__main__':
   run()

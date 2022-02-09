@@ -142,10 +142,23 @@ pipeline {
                         // Use the scheduler to check the KG-Hub bucket
                         def EXIT_CODE_NEAT_CHECK=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT-kghub-scheduler && python check.py --bucket kg-hub-public-data && cd ..  \"", returnStatus:true
                         if(EXIT_CODE_NEAT_CHECK != 0){
-                            echo 'Failed while updating NEAT...'
+                            echo 'Failed while checking for NEAT configs...'
                             currentBuild.result = 'FAILED'
                             return
                         }
+                        // Run any new configs - they will be on the current directory (before cd to NEAT)
+                        // This shouldn't do anything if there are no new configs
+                        def EXIT_CODE_NEAT_RUN=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd NEAT-kghub-scheduler && sh run_neat.sh && cd ..  \"", returnStatus:true
+                        if(EXIT_CODE_NEAT_RUN != 0){
+                            echo 'Failed while in a NEAT run...'
+                            currentBuild.result = 'FAILED'
+                            return
+                        }
+                        // TODO: ensure the results get placed in the right location
+                        // TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
+
+                        // clean up
+                        sh 'rm neat*.y*'
                     }
                 }
 
