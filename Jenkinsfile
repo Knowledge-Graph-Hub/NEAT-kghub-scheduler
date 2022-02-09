@@ -107,6 +107,7 @@ pipeline {
                                         echo started instance
                                   fi
                                   gcloud compute instances describe $GCLOUD_VM --zone=$GCLOUD_ZONE --format="yaml(status)"
+                                  gcloud auth list --filter=status:ACTIVE --format="value(account)"
                             '''
                     }
                 }
