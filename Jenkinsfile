@@ -18,8 +18,8 @@ pipeline {
         GCLOUD_VM='gpgpgpuwhereareyou'
         GCLOUD_ZONE='us-central1-a'
 
-        NEAT_DIR = '~jtr4v/NEAT'
-        NEAT_SCHEDULER_DIR = '~jtr4v/NEAT-kghub-scheduler'
+        NEAT_DIR = '~jenkinsuser/NEAT'
+        NEAT_SCHEDULER_DIR = '~jenkinsuser/NEAT-kghub-scheduler'
     }
 
     options {
@@ -123,8 +123,8 @@ pipeline {
                         echo 'Performing dependency update on Gcloud instance...'
                         sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" whoami \" | cat'
                         script {
-                            def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_DIR && git pull && pip install . && cd .. \"", returnStatus:true
-                            def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && git pull && pip install . && cd .. \"", returnStatus:true
+                            def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_DIR && git pull && python3.8 -m pip install . && cd .. \"", returnStatus:true
+                            def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && git pull && cd .. \"", returnStatus:true
                             if(EXIT_CODE_NEAT_SETUP != 0){
                                 echo 'Failed while updating NEAT...'
                                 currentBuild.result = 'FAILED'
@@ -149,7 +149,7 @@ pipeline {
                         echo 'Checking for new NEAT configs on KG-Hub...'
                         script {
                             // Use the scheduler to check the KG-Hub bucket
-                            def EXIT_CODE_NEAT_CHECK=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && python check.py --bucket kg-hub-public-data && cd ..  \"", returnStatus:true
+                            def EXIT_CODE_NEAT_CHECK=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && python3.8 check.py --bucket kg-hub-public-data && cd ..  \"", returnStatus:true
                             if(EXIT_CODE_NEAT_CHECK != 0){
                                 echo 'Failed while checking for NEAT configs...'
                                 currentBuild.result = 'FAILED'
