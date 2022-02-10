@@ -165,10 +165,9 @@ pipeline {
                             }
                             // TODO: ensure the results get placed in the right location
                             // TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
-
-                            // clean up
-                            sh 'rm neat*.y*'
                         }
+                        // clean up
+                        sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\"rm neat*.y* \"'
                     }
                 }
 
