@@ -121,7 +121,7 @@ pipeline {
                 dir('./gcloud') {
                     withCredentials([file(credentialsId: 'GCLOUD_CRED_JSON', variable: 'GCLOUD_CRED_JSON')]) {
                         echo 'Performing dependency update on Gcloud instance...'
-                        sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" whoami \" | cat && PATH=\"$PATH\:/home/jenkinsuser/.local/bin/\" ; export PATH'
+                        sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" whoami \" | cat && PATH=\"$PATH\\:/home/jenkinsuser/.local/bin/\" ; export PATH'
                         script {
                             def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_DIR && git pull && python3.8 -m pip install . && cd .. \"", returnStatus:true
                             def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && git pull && cd .. \"", returnStatus:true
