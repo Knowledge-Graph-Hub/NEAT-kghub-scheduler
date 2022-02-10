@@ -121,7 +121,7 @@ pipeline {
                 dir('./gcloud') {
                     withCredentials([file(credentialsId: 'GCLOUD_CRED_JSON', variable: 'GCLOUD_CRED_JSON')]) {
                         echo 'Performing dependency update on Gcloud instance...'
-                        sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" whoami \" | cat && PATH=\"$PATH\\:/home/jenkinsuser/.local/bin/\" ; export PATH'
+                        sh 'gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" whoami \" | cat'
                         script {
                             def EXIT_CODE_NEAT_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_DIR && git pull && python3.8 -m pip install . && cd .. \"", returnStatus:true
                             def EXIT_CODE_NEATSCHED_SETUP=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && git pull && cd .. \"", returnStatus:true
@@ -157,7 +157,7 @@ pipeline {
                             }
                             // Run any new configs - they will be on the current directory (before cd to NEAT)
                             // This shouldn't do anything if there are no new configs
-                            def EXIT_CODE_NEAT_RUN=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" cd $NEAT_SCHEDULER_DIR && sh run_neat.sh && cd ..  \"", returnStatus:true
+                            def EXIT_CODE_NEAT_RUN=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" PATH=\"$PATH\\:/home/jenkinsuser/.local/bin\" ; export PATH && cd $NEAT_SCHEDULER_DIR && sh run_neat.sh && cd ..  \"", returnStatus:true
                             if(EXIT_CODE_NEAT_RUN != 0){
                                 echo 'Failed while in a NEAT run...'
                                 currentBuild.result = 'FAILED'
