@@ -159,11 +159,8 @@ pipeline {
                             // This shouldn't do anything if there are no new configs
                             def EXIT_CODE_NEAT_RUN=sh script:"gcloud compute ssh $GCLOUD_VM --zone $GCLOUD_ZONE --ssh-flag=\"-tt\" --command=\" source ~/anaconda3/bin/activate && PATH=\"$PATH\\:/home/jenkinsuser/.local/bin\" ; export PATH && cd $NEAT_SCHEDULER_DIR && sh run_neat.sh && cd ..  \"", returnStatus:true
                             if(EXIT_CODE_NEAT_RUN != 0){
-                                echo 'Failed while in a NEAT run...'
-                                currentBuild.result = 'FAILED'
-                                return
+                                echo 'One or more NEAT runs did not complete.'
                             }
-                            // TODO: ensure the results get placed in the right location
                             // TODO: if this is the most recent build, copy graph_ml to the 'current' directory too
                         }
                         // clean up
