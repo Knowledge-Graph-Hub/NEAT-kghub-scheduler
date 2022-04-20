@@ -6,7 +6,7 @@ pipeline {
         }
     }
     triggers{
-        cron('1 9 * * 1')
+        cron('1 9 * * 1,3,5')
     }
     environment {
         RUNSTARTDATE = sh(script: "echo `date +%Y%m%d`", returnStdout: true).trim()
