@@ -72,12 +72,13 @@ def check_bucket(bucket: str):
         keyname = key["Key"]
         buildname = (keyname.split("/"))[-2]
         if not buildname.isnumeric() or len(buildname) > 8:
-            print(f"Config found in {buildname}, but this does not look like a build directory.")
+            print(f"Config found in {keyname}, but this does not look like a build directory.")
+            continue
         if buildname in all_builds_with_graph_ml:
-            print(f"Config found in {buildname} already has graph_ml present.")
+            print(f"Config found in {keyname} already has graph_ml present.")
             continue
         else:
-            print(f"Config for {buildname} has no results - will try to run.")
+            print(f"Config for {keyname} has no results - will try to run.")
             key["To_Run"] = True
 
     print(f"Found {len(all_neats)} NEAT configs.")
