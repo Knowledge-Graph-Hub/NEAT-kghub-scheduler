@@ -15,7 +15,7 @@ pipeline {
         //MERGEDKGNAME_BASE = "KG-IDG"
         //MERGEDKGNAME_GENERIC = "merged-kg"
         GCLOUD_PROJECT = 'test-project-covid-19-277821'
-        GCLOUD_VM='gpgpgpuwhereareyou'
+        GCLOUD_VM='the-neatest'
         GCLOUD_ZONE='us-central1-a'
 
         NEAT_DIR = '~jenkinsuser/NEAT'
