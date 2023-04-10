@@ -20,6 +20,7 @@ pipeline {
 
         NEAT_DIR = '~jenkinsuser/NEAT'
         NEAT_SCHEDULER_DIR = '~jenkinsuser/NEAT-kghub-scheduler'
+        SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
     }
 
     options {
