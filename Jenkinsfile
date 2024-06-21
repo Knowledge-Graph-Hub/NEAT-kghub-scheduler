@@ -10,10 +10,6 @@ pipeline {
 //    }
     environment {
         RUNSTARTDATE = sh(script: "echo `date +%Y%m%d`", returnStdout: true).trim()
-        //S3PROJECTDIR = 'kg-idg' // no trailing slash
-
-        //MERGEDKGNAME_BASE = "KG-IDG"
-        //MERGEDKGNAME_GENERIC = "merged-kg"
         GCLOUD_PROJECT = 'test-project-covid-19-277821'
         GCLOUD_VM='the-neatest'
         GCLOUD_ZONE='us-central1-a'
@@ -72,7 +68,6 @@ pipeline {
                     sh '/usr/bin/python3.8 -m venv venv'
                     sh '. venv/bin/activate'
                     // Now move on to the actual install + reqs
-                    //sh './venv/bin/pip install .'
                     sh './venv/bin/pip install git+https://github.com/Knowledge-Graph-Hub/NEAT.git'
                 }
             }
